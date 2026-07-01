@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Runway to Aug 11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F2EC;
+  --paper-dim:#EDE8DC;
+  --ink:#1C1B19;
+  --ink-soft:#5B564C;
+  --line:#D8D2C4;
+  --rust:#C1502E;
+  --sage:#7C8C6E;
+  --butter:#D9A441;
+  --navy:#33415C;
+  --white:#FFFDF8;
+  --danger:#B23A2E;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:'Space Grotesk',sans-serif;}
+body{padding-bottom:80px;}
+h1,h2,h3{font-family:'Fraunces',serif;margin:0;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+a{color:inherit;}
+button{font-family:'Space Grotesk',sans-serif;cursor:pointer;}
+textarea,input,select{font-family:'Space Grotesk',sans-serif;}
+
+/* ---- nav ---- */
+.topnav{position:sticky;top:0;z-index:50;background:rgba(245,242,236,0.92);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);}
+.topnav-inner{max-width:1080px;margin:0 auto;padding:10px 24px;display:flex;gap:22px;align-items:center;overflow-x:auto;}
+.topnav .brand{font-family:'Fraunces',serif;font-weight:600;font-size:16px;white-space:nowrap;margin-right:8px;}
+.topnav a{font-size:12px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;color:var(--ink-soft);white-space:nowrap;padding:4px 0;border-bottom:2px solid transparent;}
+.topnav a:hover{color:var(--ink);border-bottom-color:var(--rust);}
+
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+/* ---- hero ---- */
+.hero{padding:56px 0 40px;border-bottom:1px solid var(--line);}
+.hero .eyebrow{margin-bottom:10px;}
+.hero h1{font-size:56px;line-height:0.98;font-weight:600;letter-spacing:-0.01em;}
+.hero .count{color:var(--rust);font-variant-numeric:tabular-nums;}
+.hero p{max-width:560px;color:var(--ink-soft);font-size:15px;margin-top:14px;line-height:1.5;}
+.hero-meta{display:flex;gap:28px;margin-top:26px;flex-wrap:wrap;}
+.hero-meta div{border-left:2px solid var(--line);padding-left:12px;}
+.hero-meta .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);}
+.hero-meta .v{font-family:'IBM Plex Mono',monospace;font-size:15px;margin-top:2px;}
+
+/* ---- sections ---- */
+section{padding:52px 0;border-bottom:1px solid var(--line);}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+.sec-head h2{font-size:28px;font-weight:600;}
+.sec-head .num{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-soft);}
+.sec-sub{color:var(--ink-soft);font-size:13px;margin-top:-14px;margin-bottom:22px;max-width:580px;line-height:1.5;}
+
+/* ---- calendar ---- */
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px;}
+.legend span{display:inline-flex;align-items:center;gap:6px;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);}
+.legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
+.cal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;}
+.day-cell{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:8px 6px;min-height:78px;cursor:pointer;position:relative;transition:transform .08s;}
+.day-cell:hover{transform:translateY(-2px);border-color:var(--ink);}
+.day-cell.selected{outline:2px solid var(--rust);}
+.day-cell .dow{font-size:10px;text-transform:uppercase;color:var(--ink-soft);letter-spacing:.04em;}
+.day-cell .dnum{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-top:2px;}
+.day-cell .dtype{font-size:9px;text-transform:uppercase;margin-top:8px;letter-spacing:.04em;color:var(--white);padding:2px 5px;border-radius:3px;display:inline-block;}
+.day-cell .dnote{font-size:9px;color:var(--ink-soft);margin-top:4px;line-height:1.2;max-height:20px;overflow:hidden;}
+.editor-panel{margin-top:18px;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:18px;display:none;}
+.editor-panel.open{display:block;}
+.editor-panel .row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;}
+.type-btn{border:1px solid var(--line);background:var(--paper);padding:7px 12px;border-radius:20px;font-size:12px;letter-spacing:.03em;}
+.type-btn.active{color:var(--white);border-color:transparent;}
+.editor-panel textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:10px;font-size:13px;resize:vertical;min-height:50px;background:var(--paper);}
+.editor-panel .actions{display:flex;gap:8px;margin-top:12px;}
+
+/* ---- buttons ---- */
+.btn{background:var(--ink);color:var(--white);border:none;padding:9px 16px;border-radius:20px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--ink);}
+.btn.danger{background:var(--danger);}
+.btn:disabled{opacity:.4;}
+
+/* ---- budget ---- */
+.budget-summary{display:flex;gap:0;margin-bottom:24px;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+.budget-summary div{flex:1;min-width:140px;padding:16px 18px;border-right:1px solid var(--line);background:var(--white);}
+.budget-summary div:last-child{border-right:none;}
+.budget-summary .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-soft);}
+.budget-summary .v{font-family:'IBM Plex Mono',monospace;font-size:22px;margin-top:4px;}
+.pos{color:var(--sage);}
+.neg{color:var(--danger);}
+.tx-form{display:flex;gap:8px;flex-wrap:wrap;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:14px;margin-bottom:20px;}
+.tx-form input, .tx-form select{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;background:var(--paper);}
+.tx-form input[type=text]{flex:1;min-width:120px;}
+.tx-form input[type=number]{width:110px;}
+.tx-list{border-top:1px solid var(--line);}
+.tx-row{display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid var(--line);font-size:13px;}
+.tx-row .tx-date{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-soft);width:76px;flex-shrink:0;}
+.tx-row .tx-cat{flex-shrink:0;font-size:10px;text-transform:uppercase;padding:2px 7px;border-radius:10px;background:var(--paper-dim);}
+.tx-row .tx-note{flex:1;color:var(--ink-soft);}
+.tx-row .tx-amt{font-family:'IBM Plex Mono',monospace;width:90px;text-align:right;flex-shrink:0;}
+.tx-row .tx-del{background:none;border:none;color:var(--ink-soft);font-size:14px;flex-shrink:0;}
+.tx-row .tx-del:hover{color:var(--danger);}
+
+/* ---- clock ---- */
+.clock-wrap{display:flex;gap:36px;flex-wrap:wrap;align-items:flex-start;}
+.clock-face{flex-shrink:0;}
+.clock-list{flex:1;min-width:260px;}
+.hour-row{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:5px;font-size:12px;}
+.hour-row:hover{background:var(--white);}
+.hour-row .htime{font-family:'IBM Plex Mono',monospace;width:48px;color:var(--ink-soft);flex-shrink:0;}
+.hour-row .hswatch{width:10px;height:10px;border-radius:2px;flex-shrink:0;background:var(--line);}
+.hour-row .hlabel{flex:1;color:var(--ink-soft);}
+.hour-row.filled .hlabel{color:var(--ink);}
+.clock-editor{display:none;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:16px;margin-top:16px;}
+.clock-editor.open{display:block;}
+.swatches{display:flex;gap:8px;margin:10px 0;}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid transparent;cursor:pointer;}
+.swatch.active{border-color:var(--ink);}
+
+/* ---- closet ---- */
+.closet-wrap{display:grid;grid-template-columns:280px 1fr;gap:28px;}
+.featured{aspect-ratio:3/4;background:var(--white);border:1px solid var(--line);border-radius:10px;overflow:hidden;position:relative;}
+.featured img{width:100%;height:100%;object-fit:cover;}
+.featured .empty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--ink-soft);font-size:12px;text-align:center;padding:20px;}
+.featured-tools{display:flex;gap:8px;margin-top:10px;}
+.closet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;align-content:start;}
+.closet-item{aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;border:1px solid var(--line);cursor:pointer;}
+.closet-item img{width:100%;height:100%;object-fit:cover;}
+.closet-item .rm{position:absolute;top:3px;right:3px;background:rgba(28,27,25,.65);color:#fff;border:none;width:18px;height:18px;border-radius:50%;font-size:11px;line-height:1;}
+.closet-add{display:flex;gap:8px;margin-top:16px;}
+.closet-add input{flex:1;border:1px solid var(--line);border-radius:6px;padding:9px 10px;font-size:12px;background:var(--white);}
+
+/* ---- jakarta ---- */
+.jk-total{margin-bottom:20px;}
+.jk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.jk-card{background:var(--white);border:1px solid var(--line);border-radius:8px;padding:14px;}
+.jk-card .jk-date{font-family:'Fraunces',serif;font-size:18px;font-weight:600;}
+.jk-card .jk-dow{font-size:10px;text-transform:uppercase;color:var(--ink-soft);letter-spacing:.05em;margin-bottom:8px;}
+.jk-card textarea{width:100%;border:1px solid var(--line);border-radius:6px;padding:8px;font-size:12px;min-height:70px;resize:vertical;background:var(--paper);margin-bottom:8px;}
+.jk-card .jk-budget{display:flex;align-items:center;gap:6px;}
+.jk-card .jk-budget span{font-size:11px;color:var(--ink-soft);}
+.jk-card .jk-budget input{width:100%;border:1px solid var(--line);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--paper);}
+
+/* ---- focus ---- */
+.focus-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+.musts{display:flex;flex-direction:column;gap:10px;}
+.must-item{display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+.must-item input[type=checkbox]{width:18px;height:18px;accent-color:var(--rust);flex-shrink:0;}
+.must-item input[type=text]{flex:1;border:none;background:transparent;font-size:14px;outline:none;}
+.must-item.done input[type=text]{text-decoration:line-through;color:var(--ink-soft);}
+.dump-box textarea{width:100%;min-height:180px;border:1px solid var(--line);border-radius:8px;padding:14px;font-size:13px;background:var(--white);resize:vertical;line-height:1.5;}
+.focus-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:11px;color:var(--ink-soft);}
+
+footer{padding:30px 24px;text-align:center;color:var(--ink-soft);font-size:11px;letter-spacing:.04em;}
+
+@media(max-width:720px){
+  .hero h1{font-size:38px;}
+  .closet-wrap{grid-template-columns:1fr;}
+  .focus-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<nav class="topnav"><div class="topnav-inner">
+  <span class="brand">Runway → Aug 11</span>
+  <a href="#schedule">Schedule</a>
+  <a href="#budget">Budget</a>
+  <a href="#clock">Clock</a>
+  <a href="#closet">Closet</a>
+  <a href="#jakarta">Jakarta</a>
+  <a href="#focus">Focus</a>
+</div></nav>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">Pre-internship maintenance board</div>
+    <h1><span class="count" id="countdownNum">—</span> days<br>to the internship</h1>
+    <p>Everything between today and August 11 — the freelance blocks, the free afternoons, the unstable paydays, the Jakarta week, the daily clock, and the noise in your head. One page, opened daily.</p>
+    <div class="hero-meta">
+      <div><div class="k">Today</div><div class="v" id="todayLabel">—</div></div>
+      <div><div class="k">Internship starts</div><div class="v">Tue, Aug 11 2026</div></div>
+      <div><div class="k">Jakarta trip</div><div class="v">Aug 1 – 9</div></div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE -->
+  <section id="schedule">
+    <div class="sec-head"><h2>Runway schedule</h2><span class="num mono">01 — today → aug 11</span></div>
+    <div class="sec-sub">Tap a day to mark it. Confirmed 9–5 goes down as it's locked in; until then it's fine to leave days as "teaching" or "free" and edit later — nothing here is permanent.</div>
+    <div class="legend">
+      <span><i style="background:var(--navy)"></i>9–5 job</span>
+      <span><i style="background:var(--rust)"></i>Teaching</span>
+      <span><i style="background:var(--butter)"></i>Freelance</span>
+      <span><i style="background:var(--sage)"></i>Free time</span>
+      <span><i style="background:var(--ink-soft)"></i>Custom</span>
+      <span><i style="background:var(--line)"></i>Unset</span>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="editor-panel" id="dayEditor">
+      <div class="eyebrow" id="dayEditorTitle">Select a day</div>
+      <div class="row" id="typeButtons"></div>
+      <textarea id="dayNote" placeholder="What's actually happening — hike w/ friends, shoot day, client call, teaching slot, beach reset..."></textarea>
+      <div class="actions">
+        <button class="btn" id="saveDayBtn">Save</button>
+        <button class="btn ghost" id="clearDayBtn">Clear day</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUDGET -->
+  <section id="budget">
+    <div class="sec-head"><h2>Budget & unstable income</h2><span class="num mono">02 — running ledger</span></div>
+    <div class="sec-sub">Log every payment and spend as it happens — weekly, daily, whenever it actually lands. The balance below is just what you've logged, not a forecast.</div>
+    <div class="budget-summary">
+      <div><div class="k">Total in</div><div class="v pos mono" id="sumIn">S$0</div></div>
+      <div><div class="k">Total out</div><div class="v neg mono" id="sumOut">S$0</div></div>
+      <div><div class="k">Balance</div><div class="v mono" id="sumBal">S$0</div></div>
+      <div><div class="k">Last 7 days</div><div class="v mono" id="sumWeek">S$0</div></div>
+    </div>
+    <div class="tx-form">
+      <select id="txType"><option value="in">Income</option><option value="out">Expense</option></select>
+      <select id="txCat"></select>
+      <input type="date" id="txDate">
+      <input type="number" id="txAmt" placeholder="Amount (SGD)">
+      <input type="text" id="txNote" placeholder="Note — e.g. client X, groceries, teaching pay">
+      <button class="btn" id="addTxBtn">Add</button>
+    </div>
+    <div class="tx-list" id="txList"></div>
+  </section>
+
+  <!-- CLOCK -->
+  <section id="clock">
+    <div class="sec-head"><h2>Today's clock</h2><span class="num mono">03 — reusable, not per-day</span></div>
+    <div class="sec-sub">One template you overwrite daily — no deleting and rebuilding. Click a wedge (or a row on the right) to set what's happening that hour and pick a colour.</div>
+    <div class="clock-wrap">
+      <div class="clock-face" id="clockFace"></div>
+      <div class="clock-list" id="clockList"></div>
+    </div>
+    <div class="clock-editor" id="clockEditor">
+      <div class="eyebrow" id="clockEditorTitle">Hour</div>
+      <input type="text" id="clockLabel" placeholder="What's happening" style="width:100%;border:1px solid var(--line);border-radius:6px;padding:9px 10px;font-size:13px;margin-top:10px;background:var(--paper);">
+      <div class="swatches" id="clockSwatches"></div>
+      <div class="actions">
+        <button class="btn" id="saveClockBtn">Save</button>
+        <button class="btn ghost" id="clearClockBtn">Clear hour</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSET -->
+  <section id="closet">
+    <div class="sec-head"><h2>Closet dump</h2><span class="num mono">04 — inspo, on rotation</span></div>
+    <div class="sec-sub">Paste image links in — outfits, references, whatever's living in your head that day. Shuffle for a new cover, or click any thumbnail to feature it.</div>
+    <div class="closet-wrap">
+      <div>
+        <div class="featured" id="featuredBox"><div class="empty">Add an image link to start your closet dump</div></div>
+        <div class="featured-tools">
+          <button class="btn ghost" id="shuffleBtn">Shuffle</button>
+        </div>
+      </div>
+      <div>
+        <div class="closet-grid" id="closetGrid"></div>
+        <div class="closet-add">
+          <input type="text" id="closetUrl" placeholder="Paste image URL...">
+          <button class="btn" id="closetAddBtn">Add</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JAKARTA -->
+  <section id="jakarta">
+    <div class="sec-head"><h2>Jakarta, Aug 1–9</h2><span class="num mono">05 — trip block</span></div>
+    <div class="sec-sub">Day-by-day plan and budget for the trip, kept separate from the everyday ledger above.</div>
+    <div class="budget-summary jk-total">
+      <div><div class="k">Trip budget total</div><div class="v mono" id="jkTotal">S$0</div></div>
+    </div>
+    <div class="jk-grid" id="jkGrid"></div>
+  </section>
+
+  <!-- FOCUS -->
+  <section id="focus" style="border-bottom:none;">
+    <div class="sec-head"><h2>Three musts + brain dump</h2><span class="num mono">06 — today only</span></div>
+    <div class="sec-sub">Three things that actually have to happen today. Everything else spilling out of your head goes in the dump — no structure required.</div>
+    <div class="focus-grid">
+      <div class="musts" id="mustsList"></div>
+      <div class="dump-box"><textarea id="dumpArea" placeholder="Anything. Half-thoughts, reminders, feelings, to-buy, ideas for content, whatever's loud right now..."></textarea></div>
+    </div>
+    <div class="focus-foot">
+      <span id="focusDateLabel"></span>
+      <button class="btn ghost" id="newDayBtn">Start fresh for today</button>
+    </div>
+  </section>
+</div>
+
+<footer>built for the runway to august 11 — data stays saved on this artifact between visits</footer>
+
+<script>
+const $ = (s,el=document)=>el.querySelector(s);
+const $$ = (s,el=document)=>Array.from(el.querySelectorAll(s));
+const pad=n=>String(n).padStart(2,'0');
+const dstr=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayDate = new Date(); todayDate.setHours(0,0,0,0);
+const TODAY = dstr(todayDate);
+const INTERN_START = new Date(2026,7,11); // Aug 11 2026
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+async function sget(key, fallback){
+  try{
+    const r = await window.storage.get(key,false);
+    return r ? JSON.parse(r.value) : fallback;
+  }catch(e){ return fallback; }
+}
+async function sset(key, val){
+  try{ await window.storage.set(key, JSON.stringify(val), false); }catch(e){ console.error('storage error',key,e); }
+}
+
+/* ---------------- HERO ---------------- */
+function renderHero(){
+  const diffMs = INTERN_START - todayDate;
+  const days = Math.max(0, Math.ceil(diffMs/86400000));
+  $('#countdownNum').textContent = days;
+  $('#todayLabel').textContent = todayDate.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+}
+
+/* ---------------- SCHEDULE ---------------- */
+const DAY_TYPES = [
+  {id:'job',label:'9–5 job',color:'var(--navy)'},
+  {id:'teach',label:'Teaching',color:'var(--rust)'},
+  {id:'freelance',label:'Freelance',color:'var(--butter)'},
+  {id:'free',label:'Free time',color:'var(--sage)'},
+  {id:'custom',label:'Custom',color:'var(--ink-soft)'},
+];
+let scheduleData = {};
+let selectedDay = null;
+let pendingType = null;
+
+function buildDayRange(){
+  const days = [];
+  let d = new Date(todayDate);
+  while(d <= INTERN_START){
+    days.push(new Date(d));
+    d.setDate(d.getDate()+1);
+  }
+  return days;
+}
+
+function typeColor(id){ const t=DAY_TYPES.find(t=>t.id===id); return t?t.color:'var(--line)'; }
+function typeLabel(id){ const t=DAY_TYPES.find(t=>t.id===id); return t?t.label:''; }
+
+function renderCalendar(){
+  const grid = $('#calGrid');
+  grid.innerHTML = '';
+  buildDayRange().forEach(d=>{
+    const key = dstr(d);
+    const entry = scheduleData[key];
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (key===selectedDay?' selected':'');
+    cell.style.borderColor = key===TODAY ? 'var(--ink)' : '';
+    cell.innerHTML = `
+      <div class="dow">${DOW[d.getDay()]}${key===TODAY?' · today':''}</div>
+      <div class="dnum">${d.getDate()}</div>
+      ${entry ? `<div class="dtype" style="background:${typeColor(entry.type)}">${typeLabel(entry.type)}</div>` : ''}
+      ${entry && entry.note ? `<div class="dnote">${escapeHtml(entry.note)}</div>` : ''}
+    `;
+    cell.addEventListener('click', ()=>selectDay(key,d));
+    grid.appendChild(cell);
+  });
+}
+
+function escapeHtml(s){ const div=document.createElement('div'); div.textContent=s; return div.innerHTML; }
+
+function selectDay(key, dateObj){
+  selectedDay = key;
+  const entry = scheduleData[key];
+  pendingType = entry ? entry.type : null;
+  $('#dayEditor').classList.add('open');
+  $('#dayEditorTitle').textContent = dateObj.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  $('#dayNote').value = entry ? (entry.note||'') : '';
+  renderTypeButtons();
+  renderCalendar();
+}
+
+function renderTypeButtons(){
+  const wrap = $('#typeButtons');
+  wrap.innerHTML='';
+  DAY_TYPES.forEach(t=>{
+    const b = document.createElement('button');
+    b.className = 'type-btn' + (pendingType===t.id?' active':'');
+    b.style.background = pendingType===t.id ? t.color : '';
+    b.textContent = t.label;
+    b.addEventListener('click',()=>{ pendingType = t.id; renderTypeButtons(); });
+    wrap.appendChild(b);
+  });
+}
+
+$('#saveDayBtn').addEventListener('click', async ()=>{
+  if(!selectedDay) return;
+  if(!pendingType){ pendingType='free'; }
+  scheduleData[selectedDay] = { type: pendingType, note: $('#dayNote').value.trim() };
+  await sset('schedule', scheduleData);
+  renderCalendar();
+});
+$('#clearDayBtn').addEventListener('click', async ()=>{
+  if(!selectedDay) return;
+  delete scheduleData[selectedDay];
+  $('#dayNote').value=''; pendingType=null; renderTypeButtons();
+  await sset('schedule', scheduleData);
+  renderCalendar();
+});
+
+/* ---------------- BUDGET ---------------- */
+const CATEGORIES = {
+  in: ['9–5 pay','Teaching pay','Freelance','Gift','Other income'],
+  out: ['Food','Transport','Shopping','Rent/Bills','Social','Other']
+};
+let budgetData = [];
+
+function fillCatOptions(){
+  const type = $('#txType').value;
+  const sel = $('#txCat');
+  sel.innerHTML = CATEGORIES[type].map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+$('#txType').addEventListener('change', fillCatOptions);
+
+function renderBudget(){
+  const list = $('#txList');
+  const sorted = [...budgetData].sort((a,b)=> b.date.localeCompare(a.date));
+  list.innerHTML = sorted.map(tx=>`
+    <div class="tx-row">
+      <span class="tx-date">${tx.date.slice(5)}</span>
+      <span class="tx-cat">${tx.cat}</span>
+      <span class="tx-note">${escapeHtml(tx.note||'')}</span>
+      <span class="tx-amt ${tx.type==='in'?'pos':'neg'}">${tx.type==='in'?'+':'−'}S$${Number(tx.amount).toFixed(2)}</span>
+      <button class="tx-del" data-id="${tx.id}">✕</button>
+    </div>
+  `).join('') || `<div class="tx-row" style="color:var(--ink-soft)">No entries yet — add your first one above.</div>`;
+
+  $$('.tx-del', list).forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      budgetData = budgetData.filter(t=>t.id!==btn.dataset.id);
+      await sset('budget', budgetData);
+      renderBudget();
+    });
+  });
+
+  const totalIn = budgetData.filter(t=>t.type==='in').reduce((s,t)=>s+Number(t.amount),0);
+  const totalOut = budgetData.filter(t=>t.type==='out').reduce((s,t)=>s+Number(t.amount),0);
+  const weekAgo = new Date(todayDate); weekAgo.setDate(weekAgo.getDate()-7);
+  const weekNet = budgetData.filter(t=> new Date(t.date) >= weekAgo)
+    .reduce((s,t)=> s + (t.type==='in'? Number(t.amount): -Number(t.amount)), 0);
+
+  $('#sumIn').textContent = `S$${totalIn.toFixed(2)}`;
+  $('#sumOut').textContent = `S$${totalOut.toFixed(2)}`;
+  const bal = totalIn-totalOut;
+  const balEl = $('#sumBal'); balEl.textContent = `S$${bal.toFixed(2)}`; balEl.className='v mono '+(bal>=0?'pos':'neg');
+  const wkEl = $('#sumWeek'); wkEl.textContent = `${weekNet>=0?'+':'−'}S$${Math.abs(weekNet).toFixed(2)}`; wkEl.className='v mono '+(weekNet>=0?'pos':'neg');
+}
+
+$('#addTxBtn').addEventListener('click', async ()=>{
+  const amt = parseFloat($('#txAmt').value);
+  if(!amt || amt<=0) return;
+  const entry = {
+    id: Date.now().toString(36),
+    type: $('#txType').value,
+    cat: $('#txCat').value,
+    date: $('#txDate').value || TODAY,
+    amount: amt,
+    note: $('#txNote').value.trim()
+  };
+  budgetData.push(entry);
+  await sset('budget', budgetData);
+  $('#txAmt').value=''; $('#txNote').value='';
+  renderBudget();
+});
+
+/* ---------------- CLOCK ---------------- */
+const CLOCK_COLORS = ['#33415C','#C1502E','#D9A441','#7C8C6E','#8A6BA8','#5B564C','#D8D2C4'];
+let clockData = {}; // hour -> {label,color}
+let selectedHour = null;
+let pendingColor = null;
+
+function renderClockFace(){
+  const size=280, cx=size/2, cy=size/2, rOuter=132, rInner=70;
+  let paths='';
+  for(let h=0; h<24; h++){
+    const a0 = (h/24)*2*Math.PI - Math.PI/2;
+    const a1 = ((h+1)/24)*2*Math.PI - Math.PI/2;
+    const x0o=cx+rOuter*Math.cos(a0), y0o=cy+rOuter*Math.sin(a0);
+    const x1o=cx+rOuter*Math.cos(a1), y1o=cy+rOuter*Math.sin(a1);
+    const x0i=cx+rInner*Math.cos(a0), y0i=cy+rInner*Math.sin(a0);
+    const x1i=cx+rInner*Math.cos(a1), y1i=cy+rInner*Math.sin(a1);
+    const entry = clockData[h];
+    const fill = entry ? entry.color : '#FFFDF8';
+    paths += `<path d="M${x0o} ${y0o} A${rOuter} ${rOuter} 0 0 1 ${x1o} ${y1o} L${x1i} ${y1i} A${rInner} ${rInner} 0 0 0 ${x0i} ${y0i} Z"
+      fill="${fill}" stroke="#D8D2C4" stroke-width="1" data-hour="${h}" style="cursor:pointer;"/>`;
+  }
+  // hour tick labels at 0,6,12,18
+  let labels='';
+  [0,6,12,18].forEach(h=>{
+    const a = (h/24)*2*Math.PI - Math.PI/2;
+    const x=cx+(rOuter+14)*Math.cos(a), y=cy+(rOuter+14)*Math.sin(a);
+    labels += `<text x="${x}" y="${y+4}" text-anchor="middle" font-family="IBM Plex Mono" font-size="10" fill="#5B564C">${pad(h)}:00</text>`;
+  });
+  const svg = `<svg width="${size}" height="${size+16}" viewBox="0 0 ${size} ${size+16}">
+    <g transform="translate(0,8)">${paths}${labels}
+    <circle cx="${cx}" cy="${cy}" r="${rInner-2}" fill="#F5F2EC" stroke="#D8D2C4"/>
+    <text x="${cx}" y="${cy+4}" text-anchor="middle" font-family="Fraunces" font-size="13" fill="#1C1B19">today</text>
+    </g></svg>`;
+  $('#clockFace').innerHTML = svg;
+  $$('#clockFace path').forEach(p=>{
+    p.addEventListener('click', ()=> selectHour(parseInt(p.dataset.hour)));
+  });
+}
+
+function renderClockList(){
+  const wrap = $('#clockList');
+  wrap.innerHTML = '';
+  for(let h=0; h<24; h++){
+    const entry = clockData[h];
+    const row = document.createElement('div');
+    row.className='hour-row'+(entry?' filled':'');
+    row.innerHTML = `<span class="htime">${pad(h)}:00</span><span class="hswatch" style="background:${entry?entry.color:'var(--line)'}"></span><span class="hlabel">${entry?escapeHtml(entry.label):'—'}</span>`;
+    row.addEventListener('click', ()=>selectHour(h));
+    wrap.appendChild(row);
+  }
+}
+
+function selectHour(h){
+  selectedHour = h;
+  const entry = clockData[h];
+  pendingColor = entry ? entry.color : CLOCK_COLORS[0];
+  $('#clockEditor').classList.add('open');
+  $('#clockEditorTitle').textContent = `${pad(h)}:00 – ${pad((h+1)%24)}:00`;
+  $('#clockLabel').value = entry ? entry.label : '';
+  renderSwatches();
+}
+function renderSwatches(){
+  const wrap = $('#clockSwatches');
+  wrap.innerHTML = CLOCK_COLORS.map(c=>`<div class="swatch${pendingColor===c?' active':''}" style="background:${c}" data-c="${c}"></div>`).join('');
+  $$('.swatch', wrap).forEach(s=>{
+    s.addEventListener('click', ()=>{ pendingColor = s.dataset.c; renderSwatches(); });
+  });
+}
+$('#saveClockBtn').addEventListener('click', async ()=>{
+  if(selectedHour===null) return;
+  const label = $('#clockLabel').value.trim();
+  if(!label){ delete clockData[selectedHour]; }
+  else { clockData[selectedHour] = { label, color: pendingColor }; }
+  await sset('clock', clockData);
+  renderClockFace(); renderClockList();
+});
+$('#clearClockBtn').addEventListener('click', async ()=>{
+  if(selectedHour===null) return;
+  delete clockData[selectedHour];
+  $('#clockLabel').value='';
+  await sset('clock', clockData);
+  renderClockFace(); renderClockList();
+});
+
+/* ---------------- CLOSET ---------------- */
+let closetData = { images: [], featured: 0 };
+
+function renderCloset(){
+  const grid = $('#closetGrid');
+  grid.innerHTML = closetData.images.map((url,i)=>`
+    <div class="closet-item" data-i="${i}">
+      <img src="${url}" loading="lazy" onerror="this.parentElement.style.display='none'">
+      <button class="rm" data-i="${i}">✕</button>
+    </div>
+  `).join('');
+  $$('.closet-item img', grid).forEach(img=>{
+    img.addEventListener('click', ()=>{ closetData.featured = parseInt(img.parentElement.dataset.i); sset('closet',closetData); renderFeatured(); });
+  });
+  $$('.rm', grid).forEach(btn=>{
+    btn.addEventListener('click', async (e)=>{
+      e.stopPropagation();
+      const i = parseInt(btn.dataset.i);
+      closetData.images.splice(i,1);
+      if(closetData.featured>=closetData.images.length) closetData.featured=0;
+      await sset('closet',closetData);
+      renderCloset(); renderFeatured();
+    });
+  });
+  renderFeatured();
+}
+function renderFeatured(){
+  const box = $('#featuredBox');
+  if(closetData.images.length===0){
+    box.innerHTML = `<div class="empty">Add an image link to start your closet dump</div>`;
+    return;
+  }
+  const url = closetData.images[closetData.featured] || closetData.images[0];
+  box.innerHTML = `<img src="${url}">`;
+}
+$('#closetAddBtn').addEventListener('click', async ()=>{
+  const url = $('#closetUrl').value.trim();
+  if(!url) return;
+  closetData.images.push(url);
+  if(closetData.images.length===1) closetData.featured=0;
+  await sset('closet', closetData);
+  $('#closetUrl').value='';
+  renderCloset();
+});
+$('#shuffleBtn').addEventListener('click', async ()=>{
+  if(closetData.images.length<2) return;
+  let next = Math.floor(Math.random()*closetData.images.length);
+  if(next===closetData.featured) next = (next+1)%closetData.images.length;
+  closetData.featured = next;
+  await sset('closet', closetData);
+  renderFeatured();
+});
+
+/* ---------------- JAKARTA ---------------- */
+let jakartaData = {};
+function buildJakartaRange(){
+  const days=[];
+  let d = new Date(2026,7,1);
+  const end = new Date(2026,7,9);
+  while(d<=end){ days.push(new Date(d)); d.setDate(d.getDate()+1); }
+  return days;
+}
+function renderJakarta(){
+  const grid = $('#jkGrid');
+  grid.innerHTML='';
+  buildJakartaRange().forEach(d=>{
+    const key = dstr(d);
+    const entry = jakartaData[key] || {plan:'', budget:''};
+    const card = document.createElement('div');
+    card.className='jk-card';
+    card.innerHTML = `
+      <div class="jk-date">Aug ${d.getDate()}</div>
+      <div class="jk-dow">${DOW[d.getDay()]}</div>
+      <textarea placeholder="Plan for the day...">${entry.plan}</textarea>
+      <div class="jk-budget"><span>S$</span><input type="number" placeholder="Budget" value="${entry.budget}"></div>
+    `;
+    const ta = $('textarea', card);
+    const bi = $('input', card);
+    const save = async ()=>{
+      jakartaData[key] = { plan: ta.value, budget: bi.value };
+      await sset('jakarta', jakartaData);
+      updateJkTotal();
+    };
+    ta.addEventListener('input', debounce(save,500));
+    bi.addEventListener('input', debounce(save,500));
+    grid.appendChild(card);
+  });
+  updateJkTotal();
+}
+function updateJkTotal(){
+  const total = Object.values(jakartaData).reduce((s,d)=> s+(parseFloat(d.budget)||0), 0);
+  $('#jkTotal').textContent = `S$${total.toFixed(2)}`;
+}
+function debounce(fn,ms){ let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); }; }
+
+/* ---------------- FOCUS ---------------- */
+let focusData = { date: TODAY, musts:['','',''], mustsDone:[false,false,false], dump:'' };
+
+function renderFocus(){
+  $('#focusDateLabel').textContent = 'Last touched: ' + focusData.date;
+  const wrap = $('#mustsList');
+  wrap.innerHTML='';
+  for(let i=0;i<3;i++){
+    const row = document.createElement('div');
+    row.className='must-item'+(focusData.mustsDone[i]?' done':'');
+    row.innerHTML = `<input type="checkbox" ${focusData.mustsDone[i]?'checked':''}><input type="text" value="${escapeHtml(focusData.musts[i]||'')}" placeholder="Must-do #${i+1}">`;
+    const cb = $('input[type=checkbox]',row);
+    const tx = $('input[type=text]',row);
+    cb.addEventListener('change', async ()=>{
+      focusData.mustsDone[i]=cb.checked;
+      row.classList.toggle('done',cb.checked);
+      focusData.date=TODAY;
+      await sset('focus',focusData);
+    });
+    tx.addEventListener('input', debounce(async ()=>{
+      focusData.musts[i]=tx.value; focusData.date=TODAY;
+      await sset('focus',focusData);
+    },500));
+    wrap.appendChild(row);
+  }
+  $('#dumpArea').value = focusData.dump || '';
+}
+$('#dumpArea').addEventListener('input', debounce(async ()=>{
+  focusData.dump = $('#dumpArea').value; focusData.date=TODAY;
+  await sset('focus', focusData);
+},500));
+$('#newDayBtn').addEventListener('click', async ()=>{
+  focusData = { date: TODAY, musts:['','',''], mustsDone:[false,false,false], dump:'' };
+  await sset('focus', focusData);
+  renderFocus();
+});
+
+/* ---------------- INIT ---------------- */
+async function init(){
+  renderHero();
+  fillCatOptions();
+  $('#txDate').value = TODAY;
+
+  scheduleData = await sget('schedule', {});
+  renderCalendar();
+
+  budgetData = await sget('budget', []);
+  renderBudget();
+
+  clockData = await sget('clock', {});
+  renderClockFace();
+  renderClockList();
+
+  closetData = await sget('closet', {images:[], featured:0});
+  renderCloset();
+
+  jakartaData = await sget('jakarta', {});
+  renderJakarta();
+
+  focusData = await sget('focus', {date:TODAY,musts:['','',''],mustsDone:[false,false,false],dump:''});
+  renderFocus();
+}
+init();
+</script>
+</body>
+</html>
